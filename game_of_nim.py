@@ -29,7 +29,8 @@ class GameOfNim(Game):
         next_turn = self._next_player(state.to_move)
         utility_value = 0
         if sum(new_board) == 0:
-            utility_value = 1 if state.to_move == "X" else -1
+            # Player who just moved loses
+            utility_value = -1 if state.to_move == "X" else 1
         return GameState(
             to_move=next_turn,
             utility=utility_value,
