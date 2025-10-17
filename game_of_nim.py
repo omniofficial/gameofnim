@@ -1,17 +1,12 @@
-# Adrian Diaz, CPSC 481
-# Game of Nim Implementation
-
 from games import *
 
 
 class GameOfNim(Game):
     def __init__(self, board=None):
         if board is None:
-            board = [3, 1]
+            board = [7, 5, 3, 1]
         moves = self._generate_moves(board)
-        self.initial = GameState(
-            to_move="X", utility=0, board=tuple(board), moves=moves
-        )
+        self.initial = GameState(to_move="X", utility=0, board=list(board), moves=moves)
 
     def _generate_moves(self, board):
         return [
@@ -28,17 +23,17 @@ class GameOfNim(Game):
         if move not in state.moves:
             return state
         row, amount = move
-        new_board = list(state.board)
+        new_board = state.board.copy()
         new_board[row] -= amount
         updated_moves = self._generate_moves(new_board)
         next_turn = self._next_player(state.to_move)
         utility_value = 0
-        if not any(new_board):
+        if sum(new_board) == 0:
             utility_value = 1 if state.to_move == "X" else -1
         return GameState(
             to_move=next_turn,
             utility=utility_value,
-            board=tuple(new_board),
+            board=new_board,
             moves=updated_moves,
         )
 
@@ -49,14 +44,14 @@ class GameOfNim(Game):
         return state.utility if player == "X" else -state.utility
 
     def display(self, state):
-        print(f"Board: {list(state.board)}")
+        print(f"Board: {state.board}")
 
 
 if __name__ == "__main__":
-    nim = GameOfNim(board=[0, 5, 3, 1])
+    nim = GameOfNim()
     print(nim.initial.board)
     print(nim.initial.moves)
-    print(nim.result(nim.initial, (1, 3)))
+    print(nim.result(nim.initial, (1, 2)))
     outcome = nim.play_game(alpha_beta_player, query_player)
     if outcome < 0:
         print("MIN won the game")
